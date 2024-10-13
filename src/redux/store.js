@@ -1,5 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
+export const addContact = (newContact) => {
+  return {
+    type: "tasks/addContact",
+    payload: newContact,
+  };
+};
+
 const initialState = {
   contacts: {
     items: [
@@ -15,7 +22,20 @@ const initialState = {
 };
 
 const rootReducer = (state = initialState, action) => {
-  return state;
+  // Редюсер розрізняє екшени за значенням властивості type
+  switch (action.type) {
+    case "tasks/addContact": {
+        return {
+            ...state,
+            contacts: {
+              ...state.contacts,
+              items: [...state.contacts.items, action.payload],
+            },
+          };
+    }
+    default:
+      return state;
+  }
 };
 
 export const store = configureStore({
