@@ -2,8 +2,15 @@ import { configureStore } from "@reduxjs/toolkit";
 
 export const addContact = (newContact) => {
   return {
-    type: "tasks/addContact",
+    type: "contacts/add",
     payload: newContact,
+  };
+};
+
+export const deleteContact = (contactId) => {
+  return {
+    type: "contacts/delete",
+    payload: contactId,
   };
 };
 
@@ -24,15 +31,22 @@ const initialState = {
 const rootReducer = (state = initialState, action) => {
   // Редюсер розрізняє екшени за значенням властивості type
   switch (action.type) {
-    case "tasks/addContact": {
-        return {
-            ...state,
-            contacts: {
-              ...state.contacts,
-              items: [...state.contacts.items, action.payload],
-            },
-          };
+    case "contacts/add": {
+      return {
+        ...state,
+        contacts: {
+          ...state.contacts,
+          items: [...state.contacts.items, action.payload],
+        },
+      };
     }
+    case "contacts/delete":
+      return {
+        ...state,
+        contacts: {
+          items: state.contacts.items.filter((contacts) => contacts.id !== action.payload),
+        },
+      };
     default:
       return state;
   }
