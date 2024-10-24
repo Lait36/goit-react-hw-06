@@ -1,57 +1,37 @@
 import { configureStore } from "@reduxjs/toolkit";
+import contactsReducer from "./contactsSlice";
+import filtersReducer from "./filtersSlice";
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
-export const addContact = (newContact) => {
-  return {
-    type: "contacts/add",
-    payload: newContact,
-  };
+const persistConfig = {
+  key: "contacts", // ключ для збереження саме "contacts" стану
+  storage,
+  whitelist: ["items"], // або видаліть whitelist, якщо хочете зберігати весь contactsReducer
 };
 
-export const deleteContact = (contactId) => {
-  return {
-    type: "contacts/delete",
-    payload: contactId,
-  };
-};
-
-const initialState = {
-  contacts: {
-    items: [
-      { name: "Rosie Simpson", number: "459-12-56", id: "id-1" },
-      { name: "Hermione Kline", number: "443-89-12", id: "id-2" },
-      { name: "Eden Clements", number: "645-17-79", id: "id-3" },
-      { name: "Annie Copeland", number: "227-91-26", id: "id-4" },
-    ],
-  },
-  filters: {
-    name: "",
-  },
-};
-
-const rootReducer = (state = initialState, action) => {
-  // Редюсер розрізняє екшени за значенням властивості type
-  switch (action.type) {
-    case "contacts/add": {
-      return {
-        ...state,
-        contacts: {
-          ...state.contacts,
-          items: [...state.contacts.items, action.payload],
-        },
-      };
-    }
-    case "contacts/delete":
-      return {
-        ...state,
-        contacts: {
-          items: state.contacts.items.filter((contacts) => contacts.id !== action.payload),
-        },
-      };
-    default:
-      return state;
-  }
-};
+const persistedContactsReducer = persistReducer(persistConfig, contactsReducer);
 
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: {
+    contacts: persistedContactsReducer,
+    filter: filtersReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
+
+export const persistor = persistStore(store);
