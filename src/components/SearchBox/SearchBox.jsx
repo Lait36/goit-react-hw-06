@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { selectFilter, setName } from "../../redux/filtersSlice";
+import { selectFilter, changeFilter } from "../../redux/filtersSlice";
 import css from "./SearchBox.module.css";
 
 export default function SearchBox() {
@@ -7,7 +7,7 @@ export default function SearchBox() {
   const filter = useSelector(selectFilter);
 
   const handleChange = (event) => {
-    dispatch(setName(event.target.value));
+    dispatch(changeFilter(event.target.value));
   };
   return (
     <div className={css.container}>

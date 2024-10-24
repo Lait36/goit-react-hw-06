@@ -14,9 +14,9 @@ import {
 import storage from "redux-persist/lib/storage";
 
 const persistConfig = {
-  key: "contacts", // ключ для збереження саме "contacts" стану
+  key: "contacts", // ключ для збереження стану "contacts" 
   storage,
-  whitelist: ["items"], // або видаліть whitelist, якщо хочете зберігати весь contactsReducer
+  whitelist: ["items"], // зберігання лише масиву контактів
 };
 
 const persistedContactsReducer = persistReducer(persistConfig, contactsReducer);
